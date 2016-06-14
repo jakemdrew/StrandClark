@@ -1,0 +1,6 @@
+D:\SMU\ClarkKaggle\AsmFileToSequence\AsmFileToSequence\bin\Debug\AsmFileToSequence.exe.config
+D:\SMU\ClarkKaggle\AsmFileToSequence\AsmFileToSequence\bin\Debug\AsmFileToSequence.exe
+D:\SMU\ClarkKaggle\AsmFileToSequence\AsmFileToSequence\bin\Debug\AsmFileToSequence.pdb
+D:\SMU\ClarkKaggle\AsmFileToSequence\AsmFileToSequence\obj\Debug\AsmFileToSequence.csprojResolveAssemblyReference.cache
+D:\SMU\ClarkKaggle\AsmFileToSequence\AsmFileToSequence\obj\Debug\AsmFileToSequence.exe
+D:\SMU\ClarkKaggle\AsmFileToSequence\AsmFileToSequence\obj\Debug\AsmFileToSequence.pdb

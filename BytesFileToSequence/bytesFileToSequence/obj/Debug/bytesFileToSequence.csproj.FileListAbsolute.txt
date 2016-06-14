@@ -1,0 +1,6 @@
+D:\SMU\ClarkKaggle\bytesFileToSequence\bytesFileToSequence\bin\Debug\bytesFileToSequence.exe.config
+D:\SMU\ClarkKaggle\bytesFileToSequence\bytesFileToSequence\bin\Debug\bytesFileToSequence.exe
+D:\SMU\ClarkKaggle\bytesFileToSequence\bytesFileToSequence\bin\Debug\bytesFileToSequence.pdb
+D:\SMU\ClarkKaggle\bytesFileToSequence\bytesFileToSequence\obj\Debug\bytesFileToSequence.csprojResolveAssemblyReference.cache
+D:\SMU\ClarkKaggle\bytesFileToSequence\bytesFileToSequence\obj\Debug\bytesFileToSequence.exe
+D:\SMU\ClarkKaggle\bytesFileToSequence\bytesFileToSequence\obj\Debug\bytesFileToSequence.pdb
