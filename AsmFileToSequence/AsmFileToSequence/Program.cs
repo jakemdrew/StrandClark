@@ -160,7 +160,7 @@ namespace AsmFileToSequence
             foreach (var line in File.ReadLines(filePath))
             {   //We are only processing the .text file lines of the IDA Disassembly
                 if (line.Length >= 6 && line.Substring(0, 5) != ".text")
-                    break;
+                    continue;
 
                 //crop line numbers
                 string subLine = line.Length >= 14 ? line.Substring(14) : "";
