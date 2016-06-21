@@ -9,4 +9,3 @@ C:\Users\Jake\Documents\GitHub\StrandClark\AsmFileToSequence\AsmFileToSequence\o
 C:\Users\Jake\Documents\GitHub\StrandClark\AsmFileToSequence\AsmFileToSequence\obj\Debug\AsmFileToSequence.pdb
 C:\Users\Jake\Documents\GitHub\StrandClark\AsmFileToSequence\AsmFileToSequence\bin\Debug\AsmFileToSequence.exe
 C:\Users\Jake\Documents\GitHub\StrandClark\AsmFileToSequence\AsmFileToSequence\bin\Debug\AsmFileToSequence.pdb
-C:\Users\Jake\Documents\GitHub\StrandClark\AsmFileToSequence\AsmFileToSequence\obj\Debug\AsmFileToSequence.csprojResolveAssemblyReference.cache

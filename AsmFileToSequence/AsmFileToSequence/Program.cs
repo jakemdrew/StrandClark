@@ -12,24 +12,16 @@ namespace AsmFileToSequence
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Input Directory:");
-            string inputDir = Console.ReadLine();
+            Console.WriteLine("Train Directory:");
+            string trainDir = Console.ReadLine();
+
+            Console.WriteLine("Test Directory:");
+            string testDir = Console.ReadLine();
 
             //@"D:\StrandKaggleMalware_Journal\KaggleSampleShort";
 
-
-            var dir = new DirectoryInfo(inputDir);
-
-            //Delete any only asmcmd files from a previous run
-            foreach (var file in dir.EnumerateFiles("*.asmcmd"))
-            {
-                file.Delete();
-            }
-            //Delete any only asmseq files from a previous run
-            foreach (var file in dir.EnumerateFiles("*.asmseq"))
-            {
-                file.Delete();
-            }
+            DeleteOldFiles(trainDir);
+            DeleteOldFiles(testDir);
 
             ConcurrentDictionary<string, string> uniqueAsmCommands = new ConcurrentDictionary<string, string>();
 
@@ -38,10 +30,19 @@ namespace AsmFileToSequence
             //******************************************************************
 
             int fcount = 0;
-            string[] asmfiles = Directory.GetFiles(inputDir, "*.asm");
+
+            //Get all the file paths from train and test...
+            string[] trainFiles = Directory.GetFiles(trainDir, "*.asm");
+            string[] testFiles = Directory.GetFiles(testDir, "*.asm");
+
+            //Combine the two lists of files...
+            List<string> filesToProcess = new List<string>(trainFiles);
+            filesToProcess.AddRange(testFiles);
+
+            //string[] asmfiles = Directory.GetFiles(inputDir, "*.asm");
 
             //foreach (var path in asmfiles)
-            Parallel.ForEach(asmfiles, path =>
+            Parallel.ForEach(filesToProcess, path =>
             {
                 StringBuilder asmCommandFile = new StringBuilder();
 
@@ -59,7 +60,8 @@ namespace AsmFileToSequence
 
                     //Create a new file with only the assembly commands for each input file
                     string fileName = Path.GetFileNameWithoutExtension(path);
-                    File.WriteAllText(inputDir + "\\" + fileName + ".asmcmd", asmCommandFile.ToString());
+                    string fileDir = Path.GetDirectoryName(path);
+                    File.WriteAllText(fileDir + "\\" + fileName + ".asmcmd", asmCommandFile.ToString());
                     asmCommandFile.Clear();
 
                     //Keep track of the files we have processed
@@ -112,18 +114,24 @@ namespace AsmFileToSequence
                 wordNumber++;
             }
             //Create a file with the asm command to sequence word mapping  
-            File.WriteAllText(inputDir + "\\" + "asmCommandToSeqWordMap.csv", asmCmdList.ToString());
+            File.WriteAllText(trainDir + "\\" + "asmCommandToSeqWordMap.csv", asmCmdList.ToString());
 
             //******************************************************************
             //Now that we know how many unique commands we have, we create sequence files by concatenating seq words together
             //******************************************************************
 
             fcount = 0;
-            string[] asmCmdfiles = Directory.GetFiles(inputDir, "*.asmcmd");
 
+            //Get all the file paths from train and test...
+            string[] trainCmdFiles = Directory.GetFiles(trainDir, "*.asmcmd");
+            string[] testCmdFiles = Directory.GetFiles(testDir, "*.asmcmd");
+
+            //Combine the two lists of files...
+            List<string> cmdFilesToProcess = new List<string>(trainCmdFiles);
+            cmdFilesToProcess.AddRange(testCmdFiles);
 
             //foreach (var path in asmCmdfiles)
-            Parallel.ForEach(asmCmdfiles, path =>
+            Parallel.ForEach(cmdFilesToProcess, path =>
             {
                 StringBuilder sequenceData = new StringBuilder();
 
@@ -136,7 +144,8 @@ namespace AsmFileToSequence
 
                 //Create a new file with sequence data for each input file
                 string fileName = Path.GetFileNameWithoutExtension(path);
-                File.WriteAllText(inputDir + "\\" + fileName + ".asmseq", sequenceData.ToString());
+                string fileDir = Path.GetDirectoryName(path);
+                File.WriteAllText(fileDir + "\\" + fileName + ".asmseq", sequenceData.ToString());
                 sequenceData.Clear();
 
                 fcount++;
@@ -149,7 +158,21 @@ namespace AsmFileToSequence
 
         }
 
+        public static void DeleteOldFiles(string inputDir)
+        {
+            var dir = new DirectoryInfo(inputDir);
 
+            //Delete any only asmcmd files from a previous run
+            foreach (var file in dir.EnumerateFiles("*.asmcmd"))
+            {
+                file.Delete();
+            }
+            //Delete any only asmseq files from a previous run
+            foreach (var file in dir.EnumerateFiles("*.asmseq"))
+            {
+                file.Delete();
+            }
+        }
         public static string WordNumberToSeq(string Base4Word)
         {
             StringBuilder seq = new StringBuilder();
