@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,7 +18,20 @@ namespace AsmFileToSequence
             //@"D:\StrandKaggleMalware_Journal\KaggleSampleShort";
 
 
-            Dictionary<string, string> uniqueAsmCommands = new Dictionary<string, string>();
+            var dir = new DirectoryInfo(inputDir);
+
+            //Delete any only asmcmd files from a previous run
+            foreach (var file in dir.EnumerateFiles("*.asmcmd"))
+            {
+                file.Delete();
+            }
+            //Delete any only asmseq files from a previous run
+            foreach (var file in dir.EnumerateFiles("*.asmseq"))
+            {
+                file.Delete();
+            }
+
+            ConcurrentDictionary<string, string> uniqueAsmCommands = new ConcurrentDictionary<string, string>();
 
             //******************************************************************
             //Extract all assembly commands and find a list of unqiue commands 
@@ -25,30 +39,34 @@ namespace AsmFileToSequence
 
             int fcount = 0;
             string[] asmfiles = Directory.GetFiles(inputDir, "*.asm");
-            StringBuilder asmCommandFile = new StringBuilder();
-            foreach (var path in asmfiles)
+
+            //foreach (var path in asmfiles)
+            Parallel.ForEach(asmfiles, path =>
             {
+                StringBuilder asmCommandFile = new StringBuilder();
+
                 string fileExt = Path.GetExtension(path);
-                if (fileExt != ".asm") continue;
+                if (fileExt == ".asm")
+                {
+                    //Extract valid assembly commands from each line in the .asm files
+                    foreach (var asmCommand in AsmToSequence(path))
+                    {   //track unique commands in all files
+                        if (!uniqueAsmCommands.ContainsKey(asmCommand))
+                            uniqueAsmCommands.TryAdd(asmCommand, "");
+                        //add each command to the .asmcmd file 
+                        asmCommandFile.AppendLine(asmCommand);
+                    }
 
-                //Extract valid assembly commands from each line in the .asm files
-                foreach (var asmCommand in AsmToSequence(path))
-                {   //track unique commands in all files
-                    if (!uniqueAsmCommands.ContainsKey(asmCommand))
-                        uniqueAsmCommands.Add(asmCommand, "");
-                    //add each command to the .asmcmd file 
-                    asmCommandFile.AppendLine(asmCommand);
+                    //Create a new file with only the assembly commands for each input file
+                    string fileName = Path.GetFileNameWithoutExtension(path);
+                    File.WriteAllText(inputDir + "\\" + fileName + ".asmcmd", asmCommandFile.ToString());
+                    asmCommandFile.Clear();
+
+                    //Keep track of the files we have processed
+                    fcount++;
+                    Console.WriteLine("Files Processed: " + fcount);
                 }
-
-                //Create a new file with only the assembly commands for each input file
-                string fileName = Path.GetFileNameWithoutExtension(path);
-                File.WriteAllText(inputDir + "\\" + fileName + ".asmcmd", asmCommandFile.ToString());
-                asmCommandFile.Clear();
-
-                //Keep track of the files we have processed
-                fcount++;
-                Console.WriteLine("Files Processed: " + fcount);
-            }
+            });
 
             Console.WriteLine("");
 
@@ -102,10 +120,12 @@ namespace AsmFileToSequence
 
             fcount = 0;
             string[] asmCmdfiles = Directory.GetFiles(inputDir, "*.asmcmd");
-            StringBuilder sequenceData = new StringBuilder();
 
-            foreach (var path in asmCmdfiles)
+
+            //foreach (var path in asmCmdfiles)
+            Parallel.ForEach(asmCmdfiles, path =>
             {
+                StringBuilder sequenceData = new StringBuilder();
 
                 foreach (var asmCommand in File.ReadLines(path))
                 {   //Look up the correct sequence word for each assembly command
@@ -113,13 +133,15 @@ namespace AsmFileToSequence
                     //Append it to the sequence
                     sequenceData.Append(sequenceWord);
                 }
+
                 //Create a new file with sequence data for each input file
                 string fileName = Path.GetFileNameWithoutExtension(path);
                 File.WriteAllText(inputDir + "\\" + fileName + ".asmseq", sequenceData.ToString());
                 sequenceData.Clear();
 
                 fcount++;
-            }
+            });
+
             Console.WriteLine("New Sequence Files Created: " + fcount);
 
 
@@ -167,7 +189,11 @@ namespace AsmFileToSequence
 
             foreach (var line in File.ReadLines(filePath))
             {
-                string segmentType = line.Substring(0, line.IndexOf(":"));
+                if (line.Length == 0) continue;
+                int colonIdx = line.IndexOf(":");
+                if (colonIdx < 0) continue;
+
+                string segmentType = line.Substring(0, colonIdx);
 
                 //Check for segment type line
                 if (line.Contains("Segment") && line.Contains("type"))
