@@ -15,8 +15,8 @@ namespace AsmFileToSequence
             string inputDir = Console.ReadLine();
 
             //@"D:\StrandKaggleMalware_Journal\KaggleSampleShort";
-            
-            
+
+
             Dictionary<string, string> uniqueAsmCommands = new Dictionary<string, string>();
 
             //******************************************************************
@@ -28,6 +28,9 @@ namespace AsmFileToSequence
             StringBuilder asmCommandFile = new StringBuilder();
             foreach (var path in asmfiles)
             {
+                string fileExt = Path.GetExtension(path);
+                if (fileExt != ".asm") continue;
+
                 //Extract valid assembly commands from each line in the .asm files
                 foreach (var asmCommand in AsmToSequence(path))
                 {   //track unique commands in all files
@@ -50,7 +53,7 @@ namespace AsmFileToSequence
             Console.WriteLine("");
 
             //******************************************************************
-            //Find out what length sequence words we need to create base on # of unqie commands
+            //Find out what length sequence words we need to create base on # of unique commands
             //******************************************************************
 
             int uniquecommands = uniqueAsmCommands.Count;
@@ -157,10 +160,47 @@ namespace AsmFileToSequence
         /// <returns></returns>
         public static IEnumerable<string> AsmToSequence(string filePath)
         {
+            Dictionary<string, bool> PureCodeSegmentTypes = new Dictionary<string, bool>();
+
+            //if (Path.GetFileNameWithoutExtension(filePath) == "0Hrfce4X5YGESJPjl9uL")
+            //    Console.WriteLine("found!");
+
             foreach (var line in File.ReadLines(filePath))
-            {   //We are only processing the .text file lines of the IDA Disassembly
-                if (line.Length >= 6 && line.Substring(0, 5) != ".text")
+            {
+                string segmentType = line.Substring(0, line.IndexOf(":"));
+
+                //Check for segment type line
+                if (line.Contains("Segment") && line.Contains("type"))
+                {   //see if this is a known segment type
+                    bool pureCodeSegment = false;
+                    if (PureCodeSegmentTypes.TryGetValue(segmentType, out pureCodeSegment))
+                    {
+                        //do nothing, we already have this segment type's value   
+                    }
+                    else
+                    {
+                        if (line.Contains("Pure code"))
+                        {
+                            PureCodeSegmentTypes.Add(segmentType, true);
+                        }
+                        else
+                        {
+                            PureCodeSegmentTypes.Add(segmentType, false);
+                            continue;
+                        }
+                    }
+                    //we are done processing the segment type line
                     continue;
+                }
+
+                //This check only runs on non-segment type lines
+                bool pureCodeSeg = false;
+                PureCodeSegmentTypes.TryGetValue(segmentType, out pureCodeSeg);
+                if (pureCodeSeg == false) continue;
+
+                //*****************************************************************
+                //Processing for "pure code" segment type lines below
+                //*****************************************************************
 
                 //crop line numbers
                 string subLine = line.Length >= 14 ? line.Substring(14) : "";
