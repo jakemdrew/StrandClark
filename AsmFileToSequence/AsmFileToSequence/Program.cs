@@ -4,12 +4,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AsmFileToSequence
 {
     class Program
     {
+        public static ConcurrentDictionary<string, string> uniqueAsmCommands = new ConcurrentDictionary<string, string>();
+        public static ConcurrentDictionary<string, bool> PureCodeSegmentTypes = new ConcurrentDictionary<string, bool>();
+
         static void Main(string[] args)
         {
             Console.WriteLine("Train Directory:");
@@ -18,12 +22,14 @@ namespace AsmFileToSequence
             Console.WriteLine("Test Directory:");
             string testDir = Console.ReadLine();
 
-            //@"D:\StrandKaggleMalware_Journal\KaggleSampleShort";
-
+            //Delete any .asmcmd or .asmseq files from previous runs
             DeleteOldFiles(trainDir);
             DeleteOldFiles(testDir);
 
-            ConcurrentDictionary<string, string> uniqueAsmCommands = new ConcurrentDictionary<string, string>();
+            //Add a few segement types which are known to be "Pure code" to speed things up.
+            PureCodeSegmentTypes.TryAdd(".text", true);
+            PureCodeSegmentTypes.TryAdd("CODE", true);
+            PureCodeSegmentTypes.TryAdd(".mF", true);
 
             //******************************************************************
             //Extract all assembly commands and find a list of unqiue commands 
@@ -52,8 +58,7 @@ namespace AsmFileToSequence
                     //Extract valid assembly commands from each line in the .asm files
                     foreach (var asmCommand in AsmToSequence(path))
                     {   //track unique commands in all files
-                        if (!uniqueAsmCommands.ContainsKey(asmCommand))
-                            uniqueAsmCommands.TryAdd(asmCommand, "");
+                        uniqueAsmCommands.TryAdd(asmCommand, "");
                         //add each command to the .asmcmd file 
                         asmCommandFile.AppendLine(asmCommand);
                     }
@@ -65,12 +70,14 @@ namespace AsmFileToSequence
                     asmCommandFile.Clear();
 
                     //Keep track of the files we have processed
-                    fcount++;
+                    Interlocked.Increment(ref fcount);
                     Console.WriteLine("Files Processed: " + fcount);
                 }
             });
 
             Console.WriteLine("");
+            //Console.WriteLine("CMD Files Processed: " + fcount);
+
 
             //******************************************************************
             //Find out what length sequence words we need to create base on # of unique commands
@@ -148,7 +155,7 @@ namespace AsmFileToSequence
                 File.WriteAllText(fileDir + "\\" + fileName + ".asmseq", sequenceData.ToString());
                 sequenceData.Clear();
 
-                fcount++;
+                Interlocked.Increment(ref fcount);
             });
 
             Console.WriteLine("New Sequence Files Created: " + fcount);
@@ -205,7 +212,7 @@ namespace AsmFileToSequence
         /// <returns></returns>
         public static IEnumerable<string> AsmToSequence(string filePath)
         {
-            Dictionary<string, bool> PureCodeSegmentTypes = new Dictionary<string, bool>();
+
 
             //if (Path.GetFileNameWithoutExtension(filePath) == "0Hrfce4X5YGESJPjl9uL")
             //    Console.WriteLine("found!");
@@ -218,34 +225,27 @@ namespace AsmFileToSequence
 
                 string segmentType = line.Substring(0, colonIdx);
 
-                //Check for segment type line
-                if (line.Contains("Segment") && line.Contains("type"))
-                {   //see if this is a known segment type
-                    bool pureCodeSegment = false;
-                    if (PureCodeSegmentTypes.TryGetValue(segmentType, out pureCodeSegment))
-                    {
-                        //do nothing, we already have this segment type's value   
-                    }
-                    else
+                //See if we have a known segment type
+                bool pureCodeSegment = false;
+                if (PureCodeSegmentTypes.TryGetValue(segmentType, out pureCodeSegment))
+                {   //Known segment type processing, skip segment types != Pure code
+                    if (pureCodeSegment == false)
+                        continue;
+                }
+                else
+                {   //Unknown segment type processing
+                    //Check for segment type line
+                    if (line.Contains("Segment") && line.Contains("type"))
                     {
                         if (line.Contains("Pure code"))
-                        {
-                            PureCodeSegmentTypes.Add(segmentType, true);
-                        }
+                            PureCodeSegmentTypes.TryAdd(segmentType, true);
                         else
-                        {
-                            PureCodeSegmentTypes.Add(segmentType, false);
-                            continue;
-                        }
+                            PureCodeSegmentTypes.TryAdd(segmentType, false);
                     }
-                    //we are done processing the segment type line
+
+                    //nothing that makes it to here should be of segment type "Pure code" 
                     continue;
                 }
-
-                //This check only runs on non-segment type lines
-                bool pureCodeSeg = false;
-                PureCodeSegmentTypes.TryGetValue(segmentType, out pureCodeSeg);
-                if (pureCodeSeg == false) continue;
 
                 //*****************************************************************
                 //Processing for "pure code" segment type lines below

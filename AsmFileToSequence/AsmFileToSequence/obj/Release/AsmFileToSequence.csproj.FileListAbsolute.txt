@@ -3,4 +3,3 @@ C:\Users\Jake\Documents\GitHub\StrandClark\AsmFileToSequence\AsmFileToSequence\b
 C:\Users\Jake\Documents\GitHub\StrandClark\AsmFileToSequence\AsmFileToSequence\bin\Release\AsmFileToSequence.pdb
 C:\Users\Jake\Documents\GitHub\StrandClark\AsmFileToSequence\AsmFileToSequence\obj\Release\AsmFileToSequence.exe
 C:\Users\Jake\Documents\GitHub\StrandClark\AsmFileToSequence\AsmFileToSequence\obj\Release\AsmFileToSequence.pdb
-C:\Users\Jake\Documents\GitHub\StrandClark\AsmFileToSequence\AsmFileToSequence\obj\Release\AsmFileToSequence.csprojResolveAssemblyReference.cache

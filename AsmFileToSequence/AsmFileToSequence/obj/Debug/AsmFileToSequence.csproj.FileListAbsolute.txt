@@ -5,7 +5,7 @@ D:\SMU\ClarkKaggle\AsmFileToSequence\AsmFileToSequence\obj\Debug\AsmFileToSequen
 D:\SMU\ClarkKaggle\AsmFileToSequence\AsmFileToSequence\obj\Debug\AsmFileToSequence.exe
 D:\SMU\ClarkKaggle\AsmFileToSequence\AsmFileToSequence\obj\Debug\AsmFileToSequence.pdb
 C:\Users\Jake\Documents\GitHub\StrandClark\AsmFileToSequence\AsmFileToSequence\bin\Debug\AsmFileToSequence.exe.config
-C:\Users\Jake\Documents\GitHub\StrandClark\AsmFileToSequence\AsmFileToSequence\obj\Debug\AsmFileToSequence.exe
-C:\Users\Jake\Documents\GitHub\StrandClark\AsmFileToSequence\AsmFileToSequence\obj\Debug\AsmFileToSequence.pdb
 C:\Users\Jake\Documents\GitHub\StrandClark\AsmFileToSequence\AsmFileToSequence\bin\Debug\AsmFileToSequence.exe
 C:\Users\Jake\Documents\GitHub\StrandClark\AsmFileToSequence\AsmFileToSequence\bin\Debug\AsmFileToSequence.pdb
+C:\Users\Jake\Documents\GitHub\StrandClark\AsmFileToSequence\AsmFileToSequence\obj\Debug\AsmFileToSequence.exe
+C:\Users\Jake\Documents\GitHub\StrandClark\AsmFileToSequence\AsmFileToSequence\obj\Debug\AsmFileToSequence.pdb
