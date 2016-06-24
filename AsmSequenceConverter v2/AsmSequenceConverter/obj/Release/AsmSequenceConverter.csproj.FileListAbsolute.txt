@@ -1,0 +1,11 @@
+D:\SMU\ClarkKaggle\AsmSequenceConverter\AsmSequenceConverter\bin\Release\AsmSequenceConverter.exe.config
+D:\SMU\ClarkKaggle\AsmSequenceConverter\AsmSequenceConverter\bin\Release\AsmSequenceConverter.exe
+D:\SMU\ClarkKaggle\AsmSequenceConverter\AsmSequenceConverter\bin\Release\AsmSequenceConverter.pdb
+D:\SMU\ClarkKaggle\AsmSequenceConverter\AsmSequenceConverter\obj\Release\AsmSequenceConverter.exe
+D:\SMU\ClarkKaggle\AsmSequenceConverter\AsmSequenceConverter\obj\Release\AsmSequenceConverter.pdb
+D:\SMU\ClarkKaggle\AsmSequenceConverter v2\AsmSequenceConverter\bin\Release\AsmSequenceConverter.exe.config
+D:\SMU\ClarkKaggle\AsmSequenceConverter v2\AsmSequenceConverter\obj\Release\AsmSequenceConverter.exe
+D:\SMU\ClarkKaggle\AsmSequenceConverter v2\AsmSequenceConverter\obj\Release\AsmSequenceConverter.pdb
+D:\SMU\ClarkKaggle\AsmSequenceConverter v2\AsmSequenceConverter\obj\Release\AsmSequenceConverter.csprojResolveAssemblyReference.cache
+D:\SMU\ClarkKaggle\AsmSequenceConverter v2\AsmSequenceConverter\bin\Release\AsmSequenceConverter.exe
+D:\SMU\ClarkKaggle\AsmSequenceConverter v2\AsmSequenceConverter\bin\Release\AsmSequenceConverter.pdb

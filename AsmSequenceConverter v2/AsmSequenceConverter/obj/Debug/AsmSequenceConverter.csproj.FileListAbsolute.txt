@@ -1,0 +1,5 @@
+D:\SMU\ClarkKaggle\AsmSequenceConverter\AsmSequenceConverter\bin\Debug\AsmSequenceConverter.exe.config
+D:\SMU\ClarkKaggle\AsmSequenceConverter\AsmSequenceConverter\bin\Debug\AsmSequenceConverter.exe
+D:\SMU\ClarkKaggle\AsmSequenceConverter\AsmSequenceConverter\bin\Debug\AsmSequenceConverter.pdb
+D:\SMU\ClarkKaggle\AsmSequenceConverter\AsmSequenceConverter\obj\Debug\AsmSequenceConverter.exe
+D:\SMU\ClarkKaggle\AsmSequenceConverter\AsmSequenceConverter\obj\Debug\AsmSequenceConverter.pdb
